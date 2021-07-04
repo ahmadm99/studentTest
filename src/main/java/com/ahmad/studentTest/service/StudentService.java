@@ -34,8 +34,9 @@ public class StudentService {
 
     public void addNewStudent(StudentPaymentDTO dto) {
         Optional<Student> studentEmail = studentRepository.findStudentByEmail(dto.getEmail());
+//        sleep(10);
         if(studentEmail.isPresent()){
-            System.out.println("Email is already taken");
+            System.out.println("Email is already taken");//Return exception as response
         }
         else{
             if(dto.getType()==false && dto.getAmount()!=1000 || dto.getType()==true && dto.getAmount()!=500){
