@@ -62,11 +62,22 @@ public class StudentService {
         }
     }
     @Transactional
-    public void updateStudent(Long studentId, Student student){
-        Student student1 = studentRepository.findById(studentId).get();
-        student1.setName(student.getName());
-        student1.setDob(student.getDob());
-        student1.setEmail(student.getEmail());
+    public void updateStudent(Long studentId, StudentPaymentDTO dto){
+        if(!studentRepository.findById(studentId).isPresent()){
+            System.out.println("Id not found");
+            return;
+        }
+        if(dto.getType()==false && dto.getAmount()!=1000 || dto.getType()==true && dto.getAmount()!=500) {
+            System.out.println("Invalid Amount");
+            return;
+        }
+        Student student = studentRepository.findById(studentId).get();
+        Payment payment = paymentRepository.findById(studentId).get();
+        student.setName(dto.getName());
+        student.setDob(dto.getDob());
+        student.setEmail(dto.getEmail());
+        payment.setType(dto.getType());
+        payment.setAmount(dto.getAmount());
     }
 
     public List<StudentPaymentDTO> getDTO() {
