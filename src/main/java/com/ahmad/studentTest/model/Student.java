@@ -1,6 +1,5 @@
 package com.ahmad.studentTest.model;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -10,6 +9,7 @@ import java.time.Period;
 
 
 @Entity
+@Inheritance
 @RequiredArgsConstructor
 @Getter
 @Setter
