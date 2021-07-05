@@ -7,11 +7,15 @@ import com.ahmad.studentTest.model.Student;
 import com.ahmad.studentTest.repository.PaymentRepository;
 import com.ahmad.studentTest.repository.StudentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
+import org.springframework.web.context.annotation.RequestScope;
 
 import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 @Service
@@ -31,10 +35,9 @@ public class StudentService {
         return studentRepository.findAll();
     }
 
-
-    public void addNewStudent(StudentPaymentDTO dto) {
+    public void addNewStudent(StudentPaymentDTO dto) throws InterruptedException {
         Optional<Student> studentEmail = studentRepository.findStudentByEmail(dto.getEmail());
-//        sleep(10);
+        TimeUnit.SECONDS.sleep(5);
         if(studentEmail.isPresent()){
             System.out.println("Email is already taken");//Return exception as response
         }
@@ -62,8 +65,9 @@ public class StudentService {
             System.out.println("No student found with given id");
         }
     }
+
     @Transactional
-    public void updateStudent(Long studentId, StudentPaymentDTO dto){
+    public void updateStudent(Long studentId, StudentPaymentDTO dto) throws InterruptedException {
         if(!studentRepository.findById(studentId).isPresent()){
             System.out.println("Id not found");
             return;
@@ -74,6 +78,7 @@ public class StudentService {
         }
         Student student = studentRepository.findById(studentId).get();
         Payment payment = paymentRepository.findById(studentId).get();
+//        TimeUnit.SECONDS.sleep(10);
         student.setName(dto.getName());
         student.setDob(dto.getDob());
         student.setEmail(dto.getEmail());
@@ -107,3 +112,4 @@ public class StudentService {
     }
 }
 
+//YES spring services are singletons otherwise for every request a new object would be created with a lot of business logic and code

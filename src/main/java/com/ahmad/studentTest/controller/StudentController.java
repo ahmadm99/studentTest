@@ -7,7 +7,9 @@ import com.ahmad.studentTest.service.StudentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.context.annotation.RequestScope;
 
+import javax.annotation.Resource;
 import javax.transaction.Transactional;
 import java.util.List;
 
@@ -27,7 +29,7 @@ public class StudentController {
     }
 
     @PostMapping
-    public void registerNewStudent(@RequestBody StudentPaymentDTO dto){
+    public void registerNewStudent(@RequestBody StudentPaymentDTO dto) throws InterruptedException {
         studentService.addNewStudent(dto);
     }
     @DeleteMapping(path = "{studentId}")
@@ -36,7 +38,7 @@ public class StudentController {
     }
 
     @PutMapping(path = "{studentId}")
-    public void updateStudent(@PathVariable("studentId") Long studentId, @RequestBody StudentPaymentDTO dto){
+    public void updateStudent(@PathVariable("studentId") Long studentId, @RequestBody StudentPaymentDTO dto) throws InterruptedException{
         studentService.updateStudent(studentId,dto);
     }
 }
