@@ -2,33 +2,35 @@ package com.ahmad.studentTest.service;
 
 
 import com.ahmad.studentTest.DTO.StudentDTO;
+import com.ahmad.studentTest.exception.InvalidDataException;
+import com.ahmad.studentTest.exception.StudentAlreadyExistsException;
+import com.ahmad.studentTest.exception.StudentNotFoundException;
 import com.ahmad.studentTest.model.DefaultStudent;
 import com.ahmad.studentTest.model.SpecialStudent;
 import com.ahmad.studentTest.model.Student;
+import com.ahmad.studentTest.repository.DefaultStudentRepository;
+import com.ahmad.studentTest.repository.SpecialStudentRepository;
 import com.ahmad.studentTest.repository.StudentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 @Service
 public class StudentService {
 
     @Autowired
-    private StudentRepository<Student> studentRepository;
+    private StudentRepository studentRepository;
 
     @Autowired
-    private StudentRepository<SpecialStudent> specialStudentRepository;
+    private DefaultStudentRepository defaultStudentRepository;
 
     @Autowired
-    private StudentRepository<DefaultStudent> defaultStudentRepository;
-
-    private Student student = new Student();
-
+    private SpecialStudentRepository specialStudentRepository;
 
     public List<Student> getStudents(){
         return studentRepository.findAll();
@@ -38,12 +40,11 @@ public class StudentService {
         Optional<Student> studentEmail = studentRepository.findStudentByEmail(dto.getEmail());
 //        TimeUnit.SECONDS.sleep(5);
         if(studentEmail.isPresent()){
-            System.out.println("Email is already taken");//Return exception as response
+            throw new StudentAlreadyExistsException(dto.getEmail());
         }
         else{
             if(!dto.getType() && dto.getAmount()!=1000 || dto.getType() && dto.getAmount()!=500){
-                System.out.println("Invalid Amount");
-                return;
+                throw new InvalidDataException(dto.getAmount());
             }
             if(dto.getType()){
                 SpecialStudent specialStudent = new SpecialStudent();
@@ -69,19 +70,17 @@ public class StudentService {
             studentRepository.deleteById(studentId);
         }
         else{
-            System.out.println("No student found with given id");
+            throw new StudentNotFoundException(studentId);
         }
     }
 
     @Transactional
     public void updateStudent(Long studentId, StudentDTO dto) throws InterruptedException {
         if(!studentRepository.findById(studentId).isPresent()){
-            System.out.println("Id not found");
-            return;
+            throw new StudentNotFoundException(studentId);
         }
         if(!dto.getType() && dto.getAmount()!=1000 || dto.getType() && dto.getAmount()!=500) {
-            System.out.println("Invalid Amount");
-            return;
+            throw new InvalidDataException(dto.getAmount());
         }
         if(dto.getType()){
             SpecialStudent specialStudent = specialStudentRepository.findById(studentId).get();

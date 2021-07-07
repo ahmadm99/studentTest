@@ -1,11 +1,13 @@
 package com.ahmad.studentTest.controller;
 
 import com.ahmad.studentTest.DTO.StudentDTO;
+import com.ahmad.studentTest.model.SpecialStudent;
 import com.ahmad.studentTest.model.Student;
 import com.ahmad.studentTest.service.StudentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 @RestController
@@ -17,6 +19,7 @@ public class StudentController {
 
     @GetMapping(path="dto")
     public List<StudentDTO> getDTO(){return studentService.getDTO();}
+
     @GetMapping
     public List<Student> getStudents(){
         return studentService.getStudents();
@@ -26,6 +29,7 @@ public class StudentController {
     public void registerNewStudent(@RequestBody StudentDTO dto) throws InterruptedException {
         studentService.addNewStudent(dto);
     }
+
     @DeleteMapping(path = "{studentId}")
     public void deleteStudent(@PathVariable("studentId") Long studentId){
         studentService.deleteStudent(studentId);
