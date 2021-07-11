@@ -15,6 +15,7 @@ import java.time.Period;
 @Setter
 @NoArgsConstructor
 @ToString
+@DiscriminatorColumn(name="Student_Type", discriminatorType = DiscriminatorType.STRING)
 public class Student {
     @Id
     @GeneratedValue

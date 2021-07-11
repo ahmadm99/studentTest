@@ -5,6 +5,7 @@ import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.Setter;
 
+import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import java.time.LocalDate;
 
@@ -12,6 +13,7 @@ import java.time.LocalDate;
 @Setter
 @Getter
 @NoArgsConstructor
+@DiscriminatorValue("Default")
 public class DefaultStudent extends Student{
     private Short amount;
 

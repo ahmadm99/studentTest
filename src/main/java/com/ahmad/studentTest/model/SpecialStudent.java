@@ -2,6 +2,7 @@ package com.ahmad.studentTest.model;
 
 import lombok.*;
 
+import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import java.time.LocalDate;
 
@@ -9,6 +10,7 @@ import java.time.LocalDate;
 @Setter
 @Getter
 @NoArgsConstructor
+@DiscriminatorValue("Special")
 public class SpecialStudent extends Student {
     private Short amount;
 
