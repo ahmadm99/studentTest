@@ -12,12 +12,16 @@ import com.ahmad.studentTest.repository.DefaultStudentRepository;
 import com.ahmad.studentTest.repository.SpecialStudentRepository;
 import com.ahmad.studentTest.repository.StudentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 @Service
@@ -36,9 +40,8 @@ public class StudentService {
         return studentRepository.findAll();
     }
 
-    public void addNewStudent(StudentDTO dto) throws InterruptedException {
+    public ResponseEntity<String> addNewStudent(StudentDTO dto) throws InterruptedException {
         Optional<Student> studentEmail = studentRepository.findStudentByEmail(dto.getEmail());
-//        TimeUnit.SECONDS.sleep(5);
         if(studentEmail.isPresent()){
             throw new StudentAlreadyExistsException(dto.getEmail());
         }
@@ -53,6 +56,7 @@ public class StudentService {
                 specialStudent.setEmail(dto.getEmail());
                 specialStudent.setAmount(dto.getAmount());
                 studentRepository.save(specialStudent);
+                return new ResponseEntity<String>("Student added successfully", HttpStatus.OK);
             }
             else{
                 DefaultStudent defaultStudent = new DefaultStudent();
@@ -61,13 +65,15 @@ public class StudentService {
                 defaultStudent.setEmail(dto.getEmail());
                 defaultStudent.setAmount(dto.getAmount());
                 studentRepository.save(defaultStudent);
+                return new ResponseEntity<String>("Student added successfully", HttpStatus.OK);
             }
         }
     }
 
-    public void deleteStudent(Long studentId) {
+    public ResponseEntity<String> deleteStudent(Long studentId) {
         if(studentRepository.existsById(studentId)){
             studentRepository.deleteById(studentId);
+            return new ResponseEntity<String>("Student deleted successfully", HttpStatus.OK);
         }
         else{
             throw new StudentNotFoundException(studentId);
@@ -75,7 +81,7 @@ public class StudentService {
     }
 
     @Transactional
-    public void updateStudent(Long studentId, StudentDTO dto) throws InterruptedException {
+    public ResponseEntity<String> updateStudent(Long studentId, StudentDTO dto) throws InterruptedException {
         if(!studentRepository.findById(studentId).isPresent()){
             throw new StudentNotFoundException(studentId);
         }
@@ -88,6 +94,7 @@ public class StudentService {
             specialStudent.setDob(dto.getDob());
             specialStudent.setEmail(dto.getEmail());
             specialStudent.setAmount(dto.getAmount());
+            return new ResponseEntity<String>("Student updated successfully", HttpStatus.OK);
         }
         else{
             DefaultStudent defaultStudent = defaultStudentRepository.findById(studentId).get();
@@ -95,6 +102,7 @@ public class StudentService {
             defaultStudent.setDob(dto.getDob());
             defaultStudent.setEmail(dto.getEmail());
             defaultStudent.setAmount(dto.getAmount());
+            return new ResponseEntity<String>("Student updated successfully", HttpStatus.OK);
         }
 
     }

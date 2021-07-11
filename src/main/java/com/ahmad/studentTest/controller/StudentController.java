@@ -5,6 +5,7 @@ import com.ahmad.studentTest.model.SpecialStudent;
 import com.ahmad.studentTest.model.Student;
 import com.ahmad.studentTest.service.StudentService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
@@ -26,17 +27,17 @@ public class StudentController {
     }
 
     @PostMapping
-    public void registerNewStudent(@RequestBody StudentDTO dto) throws InterruptedException {
-        studentService.addNewStudent(dto);
+    public ResponseEntity<String> registerNewStudent(@RequestBody StudentDTO dto) throws InterruptedException {
+        return studentService.addNewStudent(dto);
     }
 
     @DeleteMapping(path = "{studentId}")
-    public void deleteStudent(@PathVariable("studentId") Long studentId){
-        studentService.deleteStudent(studentId);
+    public ResponseEntity<String> deleteStudent(@PathVariable("studentId") Long studentId){
+        return studentService.deleteStudent(studentId);
     }
 
     @PutMapping(path = "{studentId}")
-    public void updateStudent(@PathVariable("studentId") Long studentId, @RequestBody StudentDTO dto) throws InterruptedException{
-        studentService.updateStudent(studentId,dto);
+    public ResponseEntity<String> updateStudent(@PathVariable("studentId") Long studentId, @RequestBody StudentDTO dto) throws InterruptedException{
+        return studentService.updateStudent(studentId,dto);
     }
 }
