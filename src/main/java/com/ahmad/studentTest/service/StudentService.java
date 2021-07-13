@@ -2,6 +2,7 @@ package com.ahmad.studentTest.service;
 
 
 import com.ahmad.studentTest.DTO.StudentDTO;
+import com.ahmad.studentTest.DTO.StudentRequestDTO;
 import com.ahmad.studentTest.exception.InvalidDataException;
 import com.ahmad.studentTest.exception.StudentAlreadyExistsException;
 import com.ahmad.studentTest.exception.StudentNotFoundException;
@@ -40,30 +41,22 @@ public class StudentService {
         return studentRepository.findAll();
     }
 
-    public ResponseEntity<String> addNewStudent(StudentDTO dto) throws InterruptedException {
+    public ResponseEntity<String> addNewStudent(StudentRequestDTO dto) throws InterruptedException {
         Optional<Student> studentEmail = studentRepository.findStudentByEmail(dto.getEmail());
         if(studentEmail.isPresent()){
             throw new StudentAlreadyExistsException(dto.getEmail());
         }
         else{
-            if(!dto.getType() && dto.getAmount()!=1000 || dto.getType() && dto.getAmount()!=500){
-                throw new InvalidDataException(dto.getAmount());
-            }
+//            if(!dto.getType() && dto.getAmount()!=1000 || dto.getType() && dto.getAmount()!=500){
+//                throw new InvalidDataException(dto.getAmount());
+//            }
             if(dto.getType()){
-                SpecialStudent specialStudent = new SpecialStudent();
-                specialStudent.setName(dto.getName());
-                specialStudent.setDob(dto.getDob());
-                specialStudent.setEmail(dto.getEmail());
-                specialStudent.setAmount(dto.getAmount());
+                SpecialStudent specialStudent = new SpecialStudent(dto.getName(), dto.getDob(), dto.getEmail());
                 studentRepository.save(specialStudent);
                 return new ResponseEntity<String>("Student added successfully", HttpStatus.OK);
             }
             else{
-                DefaultStudent defaultStudent = new DefaultStudent();
-                defaultStudent.setName(dto.getName());
-                defaultStudent.setDob(dto.getDob());
-                defaultStudent.setEmail(dto.getEmail());
-                defaultStudent.setAmount(dto.getAmount());
+                DefaultStudent defaultStudent = new DefaultStudent(dto.getName(), dto.getDob(),dto.getEmail());
                 studentRepository.save(defaultStudent);
                 return new ResponseEntity<String>("Student added successfully", HttpStatus.OK);
             }
@@ -81,30 +74,36 @@ public class StudentService {
     }
 
     @Transactional
-    public ResponseEntity<String> updateStudent(Long studentId, StudentDTO dto) throws InterruptedException {
+    public ResponseEntity<String> updateStudent(Long studentId, StudentRequestDTO dto) throws InterruptedException {
         if(!studentRepository.findById(studentId).isPresent()){
             throw new StudentNotFoundException(studentId);
         }
-        if(!dto.getType() && dto.getAmount()!=1000 || dto.getType() && dto.getAmount()!=500) {
-            throw new InvalidDataException(dto.getAmount());
-        }
-        if(dto.getType()){
+//        if(!dto.getType() && dto.getAmount()!=1000 || dto.getType() && dto.getAmount()!=500) {
+//            throw new InvalidDataException(dto.getAmount());
+//        }
+        if(specialStudentRepository.existsById(studentId)){
             SpecialStudent specialStudent = specialStudentRepository.findById(studentId).get();
             specialStudent.setName(dto.getName());
             specialStudent.setDob(dto.getDob());
             specialStudent.setEmail(dto.getEmail());
-            specialStudent.setAmount(dto.getAmount());
-            return new ResponseEntity<String>("Student updated successfully", HttpStatus.OK);
+            specialStudent.setAmount((short)500);
+            if(!dto.getType()) {
+                specialStudentRepository.updateType(studentId);
+                specialStudentRepository.findById(studentId).get().setAmount((short)1000);
+            }
         }
         else{
             DefaultStudent defaultStudent = defaultStudentRepository.findById(studentId).get();
             defaultStudent.setName(dto.getName());
             defaultStudent.setDob(dto.getDob());
             defaultStudent.setEmail(dto.getEmail());
-            defaultStudent.setAmount(dto.getAmount());
-            return new ResponseEntity<String>("Student updated successfully", HttpStatus.OK);
+            defaultStudent.setAmount((short)1000);
+            if(dto.getType()) {
+                defaultStudentRepository.updateType(studentId);
+                defaultStudentRepository.findById(studentId).get().setAmount((short)500);
+            }
         }
-
+        return new ResponseEntity<String>("Student updated successfully", HttpStatus.OK);
     }
 
     public List<StudentDTO> getDTO() {

@@ -12,10 +12,15 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @DiscriminatorValue("Special")
 public class SpecialStudent extends Student {
+    @Setter(AccessLevel.NONE)
     private Short amount;
 
-    public SpecialStudent(@NonNull String name, @NonNull LocalDate dob, @NonNull String email, Short amount) {
+    public SpecialStudent(@NonNull String name, @NonNull LocalDate dob, @NonNull String email) {
         super(name, dob, email);
+        this.amount = 500;
+    }
+
+    public void setAmount(Short amount) {
         this.amount = amount;
     }
 }
