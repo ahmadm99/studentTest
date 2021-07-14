@@ -22,7 +22,7 @@ public class StudentConfig {
           DefaultStudent mahdi = new DefaultStudent("Mahdi", LocalDate.of(1999, Month.JULY,7),"mahdi@gmail.com");
           SpecialStudent waleed = new SpecialStudent("Waleed", LocalDate.of(2002, Month.FEBRUARY,7),"waleed@gmail.com");
 
-
+//create 10 thousand users
             studentRepository.saveAll(Arrays.asList(ahmad,mahdi,waleed,sAhmad));
         };
 

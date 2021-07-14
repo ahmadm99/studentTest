@@ -50,6 +50,10 @@ public class StudentService {
 //            if(!dto.getType() && dto.getAmount()!=1000 || dto.getType() && dto.getAmount()!=500){
 //                throw new InvalidDataException(dto.getAmount());
 //            }
+
+            // factory design pattern
+            //look more for strategy design pattern
+            //then merge repos
             if(dto.getType()){
                 SpecialStudent specialStudent = new SpecialStudent(dto.getName(), dto.getDob(), dto.getEmail());
                 studentRepository.save(specialStudent);
@@ -133,5 +137,7 @@ public class StudentService {
     }
 
 }
+//Transformer / Serializer
+//RESPONSE ENTITY IN CONTROLLER
 
 //YES spring services are singletons otherwise for every request a new object would be created with a lot of business logic and code
