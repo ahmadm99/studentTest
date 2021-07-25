@@ -29,7 +29,6 @@ public class StudentService {
     }
 
     public Student addNewStudent(StudentRequestDTO dto) throws InterruptedException {
-        BaseStudentFactory baseStudentFactory = new StudentFactory();
         Optional<Student> studentEmail = studentRepository.findStudentByEmail(dto.getEmail());
         if (studentEmail.isPresent()) {
             throw new StudentAlreadyExistsException(dto.getEmail());
@@ -37,6 +36,7 @@ public class StudentService {
             // factory design pattern
             //look more for strategy design pattern
             //then merge repos
+            BaseStudentFactory baseStudentFactory = new StudentFactory();
             Student student = baseStudentFactory.createStudent(dto.getType());
             student.setName(dto.getName());
             student.setDob(dto.getDob());
@@ -64,7 +64,6 @@ public class StudentService {
         if (!studentRepository.findById(studentId).isPresent()) {
             throw new StudentNotFoundException(studentId);
         }
-        BaseStudentFactory baseStudentFactory = new StudentFactory();
         Student student =studentRepository.findById(studentId).get();
         student.setName(dto.getName());
         student.setDob(dto.getDob());
