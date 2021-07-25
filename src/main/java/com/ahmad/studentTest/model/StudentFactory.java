@@ -17,4 +17,4 @@ public class StudentFactory extends BaseStudentFactory{
     }
 
 }
-//static method //consequences
+//make the method static //consequences //test static method like bean testing
