@@ -1,6 +1,7 @@
 package com.ahmad.studentTest.model;
 
 import lombok.*;
+import org.hibernate.annotations.GenericGenerator;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
@@ -18,7 +19,8 @@ import java.time.Period;
 @DiscriminatorColumn(name="Student_Type", discriminatorType = DiscriminatorType.STRING)
 public abstract class Student {
     @Id
-    @GeneratedValue
+    @GeneratedValue(generator = "generator")
+    @GenericGenerator(name = "generator", strategy = "increment")
     private Long id;
     @NonNull
     private String name;
