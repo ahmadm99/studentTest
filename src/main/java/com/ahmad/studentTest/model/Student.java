@@ -16,7 +16,7 @@ import java.time.Period;
 @NoArgsConstructor
 @ToString
 @DiscriminatorColumn(name="Student_Type", discriminatorType = DiscriminatorType.STRING)
-public class Student {
+public abstract class Student {
     @Id
     @GeneratedValue
     private Long id;
@@ -30,6 +30,8 @@ public class Student {
     @Transient
     @Getter(AccessLevel.NONE)
     private Integer age;
+
+    public abstract void setAmount(Short amount);
 
     public Integer getAge(){
         return Period.between(this.dob, LocalDate.now()).getYears();
