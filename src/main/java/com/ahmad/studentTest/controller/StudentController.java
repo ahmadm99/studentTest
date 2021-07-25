@@ -21,7 +21,7 @@ public class StudentController {
     private StudentService studentService;
 
     @Autowired
-    private StudentRepository<SpecialStudent> studentRepository;
+    private StudentRepository studentRepository;
 
     @GetMapping(path = "dto")
     public List<StudentDTO> getDTO() {

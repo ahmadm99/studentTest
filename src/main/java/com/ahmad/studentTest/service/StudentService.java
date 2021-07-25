@@ -7,6 +7,7 @@ import com.ahmad.studentTest.exception.StudentAlreadyExistsException;
 import com.ahmad.studentTest.exception.StudentNotFoundException;
 import com.ahmad.studentTest.model.*;
 import com.ahmad.studentTest.repository.StudentRepository;
+import com.fasterxml.jackson.databind.ser.Serializers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,8 +22,10 @@ import java.util.stream.Collectors;
 public class StudentService {
 
     @Autowired
-    private StudentRepository<Student> studentRepository;
+    private StudentRepository studentRepository;
 
+   @Autowired
+   private BaseStudentFactory baseStudentFactory;
 
     public List<Student> getStudents() {
         return studentRepository.findAll();
@@ -34,14 +37,12 @@ public class StudentService {
             throw new StudentAlreadyExistsException(dto.getEmail());
         } else {
             // factory design pattern
-            //look more for strategy design pattern
             //then merge repos
-            BaseStudentFactory baseStudentFactory = new StudentFactory();
             Student student = baseStudentFactory.createStudent(dto.getType());
             student.setName(dto.getName());
             student.setDob(dto.getDob());
             student.setEmail(dto.getEmail());
-            if(dto.getType()){
+            if(dto.getType()){ //get rid of if statement
                 student.setAmount((short)500);
             }
             else{
@@ -104,7 +105,7 @@ public class StudentService {
     }
 
 }
-//Transformer / Serializer
+
 //RESPONSE ENTITY IN CONTROLLER
 
 //YES spring services are singletons otherwise for every request a new object would be created with a lot of business logic and code

@@ -1,8 +1,11 @@
 package com.ahmad.studentTest.model;
 
+import org.springframework.stereotype.Component;
+
+@Component
 public class StudentFactory extends BaseStudentFactory{
     @Override
-    public Student createStudent(Boolean type) {
+    public Student createStudent(Boolean type) { //switch statement + add invalid type exception
         Student student;
         if(type){
             student = new SpecialStudent();
@@ -14,3 +17,4 @@ public class StudentFactory extends BaseStudentFactory{
     }
 
 }
+//static method //consequences
