@@ -4,12 +4,13 @@ import lombok.*;
 
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
+import javax.persistence.Transient;
 import java.time.LocalDate;
 
 @Entity
 @Setter
 @Getter
-@NoArgsConstructor
+//@NoArgsConstructor
 @DiscriminatorValue("Default")
 public class DefaultStudent extends Student{
     @Setter(AccessLevel.NONE)
@@ -20,7 +21,15 @@ public class DefaultStudent extends Student{
         this.amount = 1000;
     }
 
+    public DefaultStudent(){
+        this.amount = 1000;
+    }
+
     public void setAmount(Short amount) {
         this.amount = amount;
+    }
+
+    public void setAmount(){
+        this.amount = 1000;
     }
 }

@@ -4,23 +4,33 @@ import lombok.*;
 
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
+import javax.persistence.Transient;
 import java.time.LocalDate;
 
 @Entity
 @Setter
 @Getter
-@NoArgsConstructor
+//@NoArgsConstructor
 @DiscriminatorValue("Special")
 public class SpecialStudent extends Student {
     @Setter(AccessLevel.NONE)
     private Short amount;
+
 
     public SpecialStudent(@NonNull String name, @NonNull LocalDate dob, @NonNull String email) {
         super(name, dob, email);
         this.amount = 500;
     }
 
+    public SpecialStudent(){
+        this.amount = 500;
+    }
+
     public void setAmount(Short amount) {
         this.amount = amount;
+    }
+
+    public void setAmount(){
+        this.amount = 500;
     }
 }

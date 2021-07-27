@@ -10,6 +10,7 @@ import com.ahmad.studentTest.repository.StudentRepository;
 import com.fasterxml.jackson.databind.ser.Serializers;
 import com.mysql.cj.util.TimeUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -33,10 +34,6 @@ public class StudentService {
     @Autowired
     private StudentRepository studentRepository;
 
-   @Autowired
-   private BaseStudentFactory baseStudentFactory;
-
-//   Pageable first100Students = PageRequest.of(0,100);
 
     public List<Student> getStudents() {
         return studentRepository.findAll();
@@ -46,23 +43,13 @@ public class StudentService {
         Optional<Student> studentEmail = studentRepository.findStudentByEmail(dto.getEmail());
         if (studentEmail.isPresent()) {
             throw new StudentAlreadyExistsException(dto.getEmail());
-        } else {
-            // factory design pattern
-            //then merge repos
-            Student student = baseStudentFactory.createStudent(dto.getType());
-//            Student student = StudentFactory.createStudent(dto.getType());
-//            TimeUnit.SECONDS.sleep(5);
-            student.setName(dto.getName());
-            student.setDob(dto.getDob());
-            student.setEmail(dto.getEmail());
-            if(dto.getType()){ //get rid of if statement
-                student.setAmount((short)500);
-            }
-            else{
-                student.setAmount((short)1000);
-            }
-            return studentRepository.save(student);
         }
+        TimeUnit.SECONDS.sleep(5);
+        Student student = StudentFactory.createStudent(dto.getType());
+        student.setName(dto.getName());
+        student.setDob(dto.getDob());
+        student.setEmail(dto.getEmail());
+            return studentRepository.save(student);
     }
 
     public void deleteStudent(Long studentId) {
@@ -82,6 +69,7 @@ public class StudentService {
         student.setName(dto.getName());
         student.setDob(dto.getDob());
         student.setEmail(dto.getEmail());
+        student.setId(studentId);
         if(dto.getType()){
             student.setAmount((short)500);
             studentRepository.changeType(studentId,"Special");
@@ -122,7 +110,8 @@ public class StudentService {
         return studentRepository.findAll(pageable);
     }
 }
-
-//RESPONSE ENTITY IN CONTROLLER
+//add validation. respond with max size of pages = size of users/pagination size. user specifies size
+//many to many relationship
+//many to many with eager and lazy load with cascade
 
 //YES spring services are singletons otherwise for every request a new object would be created with a lot of business logic and code

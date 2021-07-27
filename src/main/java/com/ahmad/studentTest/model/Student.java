@@ -35,6 +35,8 @@ public abstract class Student {
 
     public abstract void setAmount(Short amount);
 
+    public abstract void setAmount();
+
     public Integer getAge(){
         return Period.between(this.dob, LocalDate.now()).getYears();
     }
