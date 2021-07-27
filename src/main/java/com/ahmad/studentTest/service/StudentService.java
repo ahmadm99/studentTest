@@ -8,14 +8,23 @@ import com.ahmad.studentTest.exception.StudentNotFoundException;
 import com.ahmad.studentTest.model.*;
 import com.ahmad.studentTest.repository.StudentRepository;
 import com.fasterxml.jackson.databind.ser.Serializers;
+import com.mysql.cj.util.TimeUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
+import org.springframework.web.context.annotation.RequestScope;
 
 import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 @Service
@@ -26,6 +35,8 @@ public class StudentService {
 
    @Autowired
    private BaseStudentFactory baseStudentFactory;
+
+//   Pageable first100Students = PageRequest.of(0,100);
 
     public List<Student> getStudents() {
         return studentRepository.findAll();
@@ -39,6 +50,8 @@ public class StudentService {
             // factory design pattern
             //then merge repos
             Student student = baseStudentFactory.createStudent(dto.getType());
+//            Student student = StudentFactory.createStudent(dto.getType());
+//            TimeUnit.SECONDS.sleep(5);
             student.setName(dto.getName());
             student.setDob(dto.getDob());
             student.setEmail(dto.getEmail());
@@ -104,6 +117,10 @@ public class StudentService {
         return dto;
     }
 
+    public Page<Student> getPagination(int pageNumber) {
+        Pageable pageable = PageRequest.of(pageNumber, 10, Sort.by("name"));
+        return studentRepository.findAll(pageable);
+    }
 }
 
 //RESPONSE ENTITY IN CONTROLLER

@@ -28,7 +28,7 @@ public class StudentConfig {
             studentRepository.saveAll(Arrays.asList(ahmad,mahdi,waleed,sAhmad));
 
             List<SpecialStudent> list = new ArrayList<>();
-            for(int i = 1; i<100000;i++) {
+            for(int i = 1; i<1000;i++) {
                 SpecialStudent demo = new SpecialStudent("Test", LocalDate.of(2000, Month.FEBRUARY,7),"test@gmail.com");
                 list.add(demo);
             }
