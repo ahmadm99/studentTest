@@ -3,24 +3,19 @@ package com.ahmad.studentTest.service;
 
 import com.ahmad.studentTest.DTO.StudentDTO;
 import com.ahmad.studentTest.DTO.StudentRequestDTO;
+import com.ahmad.studentTest.exception.ExceededMaxPageNumberException;
+import com.ahmad.studentTest.exception.ExceededMaxPageSizeException;
 import com.ahmad.studentTest.exception.StudentAlreadyExistsException;
 import com.ahmad.studentTest.exception.StudentNotFoundException;
 import com.ahmad.studentTest.model.*;
 import com.ahmad.studentTest.repository.StudentRepository;
-import com.fasterxml.jackson.databind.ser.Serializers;
-import com.mysql.cj.util.TimeUtil;
+//import com.mysql.cj.util.TimeUtil;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.Bean;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
-import org.springframework.web.context.annotation.RequestScope;
 
 import javax.transaction.Transactional;
 import java.util.List;
@@ -49,7 +44,7 @@ public class StudentService {
         student.setName(dto.getName());
         student.setDob(dto.getDob());
         student.setEmail(dto.getEmail());
-            return studentRepository.save(student);
+        return studentRepository.save(student);
     }
 
     public void deleteStudent(Long studentId) {
@@ -65,18 +60,17 @@ public class StudentService {
         if (!studentRepository.findById(studentId).isPresent()) {
             throw new StudentNotFoundException(studentId);
         }
-        Student student =studentRepository.findById(studentId).get();
+        Student student = studentRepository.findById(studentId).get();
         student.setName(dto.getName());
         student.setDob(dto.getDob());
         student.setEmail(dto.getEmail());
         student.setId(studentId);
-        if(dto.getType()){
-            student.setAmount((short)500);
-            studentRepository.changeType(studentId,"Special");
-        }
-        else{
-            student.setAmount((short)1000);
-            studentRepository.changeType(studentId,"Default");
+        if (dto.getType()) {
+            student.setAmount((short) 500);
+            studentRepository.changeType(studentId, "Special");
+        } else {
+            student.setAmount((short) 1000);
+            studentRepository.changeType(studentId, "Default");
         }
     }
 
@@ -109,6 +103,23 @@ public class StudentService {
         Pageable pageable = PageRequest.of(pageNumber, 10, Sort.by("name"));
         return studentRepository.findAll(pageable);
     }
+
+    public Page<Student> getPaginationValid(int pageSize, int pageNumber) {
+        if (pageSize > 100) {
+            throw new ExceededMaxPageSizeException(pageSize);
+        }
+        if(pageNumber > getMaxPageNumber(pageSize)) {
+            throw new ExceededMaxPageNumberException(pageNumber, getMaxPageNumber(pageSize));
+        }
+        Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.by("name"));
+        return studentRepository.findAll(pageable);
+
+    }
+
+    public int getMaxPageNumber(int pageSize){
+        return (int)studentRepository.count()/pageSize;
+    }
+
 }
 //add validation. respond with max size of pages = size of users/pagination size. user specifies size
 //many to many relationship

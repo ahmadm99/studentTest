@@ -13,9 +13,12 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping(path = "/")
@@ -32,11 +35,6 @@ public class StudentController {
         return studentService.getDTO();
     }
 
-    @GetMapping(path = "s")
-    public List<Student> getSpecialDTO() {
-        return studentRepository.findAll();
-    }
-
     @GetMapping
     public List<Student> getStudents() {
         return studentService.getStudents();
@@ -45,6 +43,14 @@ public class StudentController {
     @GetMapping(path = "{pageNumber}")
     public Page<Student> getPagination(@PathVariable("pageNumber") int pageNumber){
         return studentService.getPagination(pageNumber);
+    }
+
+    @GetMapping(path = "{pageSize}/{pageNumber}")
+    public ResponseEntity<Object> getPaginationValid(@PathVariable("pageSize") int pageSize , @PathVariable("pageNumber") int pageNumber){
+        Map<String, Object> body = new LinkedHashMap<>();
+        body.put("Total available pages", studentService.getMaxPageNumber(pageSize));
+        body.put("Students List",studentService.getPaginationValid(pageSize,pageNumber));
+        return new ResponseEntity<>(body, HttpStatus.OK);
     }
 
     @PostMapping
