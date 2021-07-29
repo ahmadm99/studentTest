@@ -149,8 +149,12 @@ public class StudentService {
         studentRepository.save(student);
     }
 }
-//add validation. respond with max size of pages = size of users/pagination size. user specifies size
-//many to many relationship
-//many to many with eager and lazy load with cascade
+//access pageable object added by pagination to modify last available page instead of accessing database
+//switch to url parameters
+//return class rather than responseentity.put
 
-//YES spring services are singletons otherwise for every request a new object would be created with a lot of business logic and code
+//request should always return json
+//switch url to convention
+
+//add login for admin with user and password
+
