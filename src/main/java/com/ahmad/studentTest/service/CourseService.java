@@ -6,6 +6,7 @@ import com.ahmad.studentTest.exception.CourseNotFoundException;
 import com.ahmad.studentTest.exception.StudentAlreadyExistsException;
 import com.ahmad.studentTest.exception.StudentNotFoundException;
 import com.ahmad.studentTest.model.Course;
+import com.ahmad.studentTest.model.CourseFactory;
 import com.ahmad.studentTest.repository.CourseRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,6 +21,9 @@ public class CourseService {
 
     @Autowired
     CourseRepository courseRepository;
+
+    @Autowired
+    CourseFactory courseFactory;
 
     public List<CourseDTO> getCourseDTO() {
        List<CourseDTO> courses =  courseRepository.findAll().stream().map(course -> new CourseDTO(course.getId(),course.getName())).collect(Collectors.toList());
@@ -43,7 +47,8 @@ public class CourseService {
         if(courseName.isPresent()){
             throw new CourseAlreadyExistsException(courseDTO.getName());
         }
-        Course course = new Course(courseDTO.getName());
+//        Course course = new Course(courseDTO.getName());
+        Course course = CourseFactory.createCourse(courseDTO.getName());
         return courseRepository.save(course);
     }
 

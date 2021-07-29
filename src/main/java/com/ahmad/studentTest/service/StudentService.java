@@ -40,7 +40,7 @@ public class StudentService {
         if (studentEmail.isPresent()) {
             throw new StudentAlreadyExistsException(dto.getEmail());
         }
-        TimeUnit.SECONDS.sleep(5);
+//        TimeUnit.SECONDS.sleep(5);
         Student student = StudentFactory.createStudent(dto.getType());
         student.setName(dto.getName());
         student.setDob(dto.getDob());

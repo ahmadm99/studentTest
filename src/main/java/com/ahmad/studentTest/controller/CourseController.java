@@ -20,8 +20,6 @@ public class CourseController {
     @Autowired
     CourseService courseService;
 
-    @Autowired
-    CourseRepository courseRepository;
 
     @GetMapping(path = "coursedto")
     public List<CourseDTO> getCoursesDTO(){
