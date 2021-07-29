@@ -3,8 +3,6 @@ package com.ahmad.studentTest.service;
 import com.ahmad.studentTest.DTO.CourseDTO;
 import com.ahmad.studentTest.exception.CourseAlreadyExistsException;
 import com.ahmad.studentTest.exception.CourseNotFoundException;
-import com.ahmad.studentTest.exception.StudentAlreadyExistsException;
-import com.ahmad.studentTest.exception.StudentNotFoundException;
 import com.ahmad.studentTest.model.Course;
 import com.ahmad.studentTest.model.CourseFactory;
 import com.ahmad.studentTest.repository.CourseRepository;
@@ -22,8 +20,6 @@ public class CourseService {
     @Autowired
     CourseRepository courseRepository;
 
-    @Autowired
-    CourseFactory courseFactory;
 
     public List<CourseDTO> getCourseDTO() {
        List<CourseDTO> courses =  courseRepository.findAll().stream().map(course -> new CourseDTO(course.getId(),course.getName())).collect(Collectors.toList());
