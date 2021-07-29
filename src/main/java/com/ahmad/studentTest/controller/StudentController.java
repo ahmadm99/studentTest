@@ -74,4 +74,10 @@ public class StudentController {
         studentService.updateStudent(studentId, dto);
         return new ResponseEntity<String>("Student updated successfully", HttpStatus.OK);
     }
+
+    @PutMapping(path = "map/{studentId}/{courseId}")
+    public ResponseEntity<String> mapCourseToStudent(@PathVariable("studentId") Long studentId, @PathVariable("courseId") Long courseId){
+        studentService.mapCourseToStudent(studentId,courseId);
+        return new ResponseEntity<String>("Student updated successfully", HttpStatus.OK);
+    }
 }

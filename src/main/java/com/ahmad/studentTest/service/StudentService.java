@@ -3,11 +3,9 @@ package com.ahmad.studentTest.service;
 
 import com.ahmad.studentTest.DTO.StudentDTO;
 import com.ahmad.studentTest.DTO.StudentRequestDTO;
-import com.ahmad.studentTest.exception.ExceededMaxPageNumberException;
-import com.ahmad.studentTest.exception.InvalidPageSizeException;
-import com.ahmad.studentTest.exception.StudentAlreadyExistsException;
-import com.ahmad.studentTest.exception.StudentNotFoundException;
+import com.ahmad.studentTest.exception.*;
 import com.ahmad.studentTest.model.*;
+import com.ahmad.studentTest.repository.CourseRepository;
 import com.ahmad.studentTest.repository.StudentRepository;
 //import com.mysql.cj.util.TimeUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +26,9 @@ public class StudentService {
 
     @Autowired
     private StudentRepository studentRepository;
+
+    @Autowired
+    private CourseRepository courseRepository;
 
 
     public List<Student> getStudents() {
@@ -122,6 +123,18 @@ public class StudentService {
         return (int)studentRepository.count()/pageSize;
     }
 
+    public void mapCourseToStudent(Long studentId, Long courseId) {
+        Student student = studentRepository.findById(studentId).get();
+        if(student == null){
+            throw new StudentNotFoundException(studentId);
+        }
+        Course course = courseRepository.findById(courseId).get();
+        if(course == null){
+            throw new CourseNotFoundException(courseId);
+        }
+        student.getCourses().add(course);
+        studentRepository.save(student);
+    }
 }
 //add validation. respond with max size of pages = size of users/pagination size. user specifies size
 //many to many relationship

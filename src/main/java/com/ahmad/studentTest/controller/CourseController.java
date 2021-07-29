@@ -52,4 +52,5 @@ public class CourseController {
         courseService.updateCourse(courseId,courseDTO);
         return new ResponseEntity<String>("Course updated successfully", HttpStatus.OK);
     }
+
 }
