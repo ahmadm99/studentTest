@@ -135,6 +135,19 @@ public class StudentService {
         student.getCourses().add(course);
         studentRepository.save(student);
     }
+
+    public void unmapCourseToStudent(Long studentId, Long courseId) {
+        Student student = studentRepository.findById(studentId).get();
+        if(student == null){
+            throw new StudentNotFoundException(studentId);
+        }
+        Course course = courseRepository.findById(courseId).get();
+        if(course == null){
+            throw new CourseNotFoundException(courseId);
+        }
+        student.getCourses().remove(course);
+        studentRepository.save(student);
+    }
 }
 //add validation. respond with max size of pages = size of users/pagination size. user specifies size
 //many to many relationship

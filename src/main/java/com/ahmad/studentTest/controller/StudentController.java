@@ -80,4 +80,10 @@ public class StudentController {
         studentService.mapCourseToStudent(studentId,courseId);
         return new ResponseEntity<String>("Student updated successfully", HttpStatus.OK);
     }
+
+    @PutMapping(path = "unmap/{studentId}/{courseId}")
+    public ResponseEntity<String> unmapCourseToStudent(@PathVariable("studentId") Long studentId, @PathVariable("courseId") Long courseId){
+        studentService.unmapCourseToStudent(studentId,courseId);
+        return new ResponseEntity<String>("Student updated successfully", HttpStatus.OK);
+    }
 }
