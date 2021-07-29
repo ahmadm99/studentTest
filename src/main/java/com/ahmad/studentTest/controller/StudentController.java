@@ -2,6 +2,7 @@ package com.ahmad.studentTest.controller;
 
 import com.ahmad.studentTest.DTO.StudentDTO;
 import com.ahmad.studentTest.DTO.StudentRequestDTO;
+import com.ahmad.studentTest.model.Course;
 import com.ahmad.studentTest.model.SpecialStudent;
 import com.ahmad.studentTest.model.Student;
 import com.ahmad.studentTest.repository.StudentRepository;
@@ -30,9 +31,9 @@ public class StudentController {
     @Autowired
     private StudentRepository studentRepository;
 
-    @GetMapping(path = "dto")
-    public List<StudentDTO> getDTO() {
-        return studentService.getDTO();
+    @GetMapping(path = "studentdto")
+    public List<StudentDTO> getStudentDTO() {
+        return studentService.getStudentDTO();
     }
 
     @GetMapping
@@ -48,8 +49,8 @@ public class StudentController {
     @GetMapping(path = "{pageSize}/{pageNumber}")
     public ResponseEntity<Object> getPaginationValid(@PathVariable("pageSize") int pageSize , @PathVariable("pageNumber") int pageNumber){
         Map<String, Object> body = new LinkedHashMap<>();
-        body.put("Total available pages", studentService.getMaxPageNumber(pageSize));
         body.put("Students List",studentService.getPaginationValid(pageSize,pageNumber));
+        body.put("Last available page", studentService.getMaxPageNumber(pageSize));
         return new ResponseEntity<>(body, HttpStatus.OK);
     }
 

@@ -8,6 +8,7 @@ import java.time.LocalDate;
 @Getter
 @Setter
 public class StudentDTO {
+    private Long id;
     private String name;
     private LocalDate dob;
     private String email;

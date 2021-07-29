@@ -4,7 +4,7 @@ package com.ahmad.studentTest.service;
 import com.ahmad.studentTest.DTO.StudentDTO;
 import com.ahmad.studentTest.DTO.StudentRequestDTO;
 import com.ahmad.studentTest.exception.ExceededMaxPageNumberException;
-import com.ahmad.studentTest.exception.ExceededMaxPageSizeException;
+import com.ahmad.studentTest.exception.InvalidPageSizeException;
 import com.ahmad.studentTest.exception.StudentAlreadyExistsException;
 import com.ahmad.studentTest.exception.StudentNotFoundException;
 import com.ahmad.studentTest.model.*;
@@ -74,7 +74,7 @@ public class StudentService {
         }
     }
 
-    public List<StudentDTO> getDTO() {
+    public List<StudentDTO> getStudentDTO() {
         List<StudentDTO> dto = studentRepository.findAll().stream().map(this::mapStudentDTO).collect(Collectors.toList());
         return dto;
     }
@@ -83,6 +83,7 @@ public class StudentService {
         StudentDTO dto = new StudentDTO();
         if (student instanceof SpecialStudent) {
             SpecialStudent specialStudent = (SpecialStudent) student;
+            dto.setId(specialStudent.getId());
             dto.setName(specialStudent.getName());
             dto.setDob(specialStudent.getDob());
             dto.setEmail(specialStudent.getEmail());
@@ -90,6 +91,7 @@ public class StudentService {
             dto.setType(true);
         } else {
             DefaultStudent defaultStudent = (DefaultStudent) student;
+            dto.setId(defaultStudent.getId());
             dto.setName(defaultStudent.getName());
             dto.setDob(defaultStudent.getDob());
             dto.setEmail(defaultStudent.getEmail());
@@ -105,8 +107,8 @@ public class StudentService {
     }
 
     public Page<Student> getPaginationValid(int pageSize, int pageNumber) {
-        if (pageSize > 100) {
-            throw new ExceededMaxPageSizeException(pageSize);
+        if (pageSize > 100 || pageSize <= 0) {
+            throw new InvalidPageSizeException(pageSize);
         }
         if(pageNumber > getMaxPageNumber(pageSize)) {
             throw new ExceededMaxPageNumberException(pageNumber, getMaxPageNumber(pageSize));

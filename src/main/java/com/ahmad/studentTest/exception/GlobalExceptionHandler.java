@@ -38,8 +38,8 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(body, HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler(ExceededMaxPageSizeException.class)
-    public ResponseEntity<Object> handleExceededMaxSize(ExceededMaxPageSizeException ex, WebRequest request) {
+    @ExceptionHandler(InvalidPageSizeException.class)
+    public ResponseEntity<Object> handleExceededMaxSize(InvalidPageSizeException ex, WebRequest request) {
         Map<String, Object> body = new LinkedHashMap<>();
         body.put("timestamp", LocalDateTime.now());
         body.put("message", ex.getMessage());
