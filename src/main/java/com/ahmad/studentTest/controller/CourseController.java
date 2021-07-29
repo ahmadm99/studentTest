@@ -1,6 +1,7 @@
 package com.ahmad.studentTest.controller;
 
 import com.ahmad.studentTest.DTO.CourseDTO;
+import com.ahmad.studentTest.exception.StudentAlreadyExistsException;
 import com.ahmad.studentTest.model.Course;
 import com.ahmad.studentTest.repository.CourseRepository;
 import com.ahmad.studentTest.service.CourseService;
@@ -10,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping(path = "/")
@@ -35,5 +37,13 @@ public class CourseController {
     public ResponseEntity<String> deleteCourse(@PathVariable("courseId") Long courseId) {
         courseService.deleteCourse(courseId);
         return new ResponseEntity<String>("Course deleted successfully", HttpStatus.OK);
+    }
+
+    @PostMapping(path = "addcourse")
+    public ResponseEntity<String> addNewCourse(@RequestBody CourseDTO courseDTO){
+        if(courseService.addNewCourse(courseDTO) != null){
+            return new ResponseEntity<String>("Course added successfully", HttpStatus.OK);
+        }
+        return new ResponseEntity<String>("Error adding course", HttpStatus.OK);
     }
 }

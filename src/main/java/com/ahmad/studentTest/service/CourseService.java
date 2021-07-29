@@ -1,6 +1,9 @@
 package com.ahmad.studentTest.service;
 
 import com.ahmad.studentTest.DTO.CourseDTO;
+import com.ahmad.studentTest.exception.CourseAlreadyExistsException;
+import com.ahmad.studentTest.exception.CourseNotFoundException;
+import com.ahmad.studentTest.exception.StudentAlreadyExistsException;
 import com.ahmad.studentTest.exception.StudentNotFoundException;
 import com.ahmad.studentTest.model.Course;
 import com.ahmad.studentTest.repository.CourseRepository;
@@ -8,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -29,7 +33,16 @@ public class CourseService {
         if (courseRepository.existsById(courseId)) {
             courseRepository.deleteById(courseId);
         } else {
-            throw new StudentNotFoundException(courseId);
+            throw new CourseNotFoundException(courseId);
         }
+    }
+
+    public Course addNewCourse(CourseDTO courseDTO) {
+        Optional<Course> courseName = courseRepository.findCourseByName(courseDTO.getName());
+        if(courseName.isPresent()){
+            throw new CourseAlreadyExistsException(courseDTO.getName());
+        }
+        Course course = new Course(courseDTO.getName());
+        return courseRepository.save(course);
     }
 }
