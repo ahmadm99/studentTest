@@ -10,6 +10,7 @@ import com.ahmad.studentTest.repository.CourseRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -44,5 +45,15 @@ public class CourseService {
         }
         Course course = new Course(courseDTO.getName());
         return courseRepository.save(course);
+    }
+
+    @Transactional
+    public void updateCourse(Long courseId, CourseDTO courseDTO) {
+        if(!courseRepository.findById(courseId).isPresent()){
+            throw new CourseNotFoundException(courseId);
+        }
+        Course course = courseRepository.findById(courseId).get();
+        course.setName(courseDTO.getName());
+        courseRepository.save(course);
     }
 }

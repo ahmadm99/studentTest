@@ -46,4 +46,10 @@ public class CourseController {
         }
         return new ResponseEntity<String>("Error adding course", HttpStatus.OK);
     }
+
+    @PutMapping(path = "updatecourse/{courseId}")
+    public ResponseEntity<String> updateCourse(@PathVariable("courseId") Long courseId, @RequestBody CourseDTO courseDTO){
+        courseService.updateCourse(courseId,courseDTO);
+        return new ResponseEntity<String>("Course updated successfully", HttpStatus.OK);
+    }
 }
