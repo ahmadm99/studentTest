@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 
@@ -31,24 +32,27 @@ public class CourseController {
         return courseService.getCourses();
     }
 
-    @DeleteMapping(path = "delete/course/{courseId}")
-    public ResponseEntity<String> deleteCourse(@PathVariable("courseId") Long courseId) {
+    @DeleteMapping(path = "courses/{courseId}")
+    public ResponseEntity<Object> deleteCourse(@PathVariable("courseId") Long courseId) {
         courseService.deleteCourse(courseId);
-        return new ResponseEntity<String>("Course deleted successfully", HttpStatus.OK);
+        HashMap<String, Object> body = new HashMap<>();
+        body.put("message","Course deleted successfully");
+        body.put("status",HttpStatus.OK);
+        return new ResponseEntity<>(body, HttpStatus.OK);
     }
 
-    @PostMapping(path = "addcourse")
-    public ResponseEntity<String> addNewCourse(@RequestBody CourseDTO courseDTO){
-        if(courseService.addNewCourse(courseDTO) != null){
-            return new ResponseEntity<String>("Course added successfully", HttpStatus.OK);
-        }
-        return new ResponseEntity<String>("Error adding course", HttpStatus.OK);
+    @PostMapping(path = "add/course")
+    public ResponseEntity<Course> addNewCourse(@RequestBody CourseDTO courseDTO){
+        return new ResponseEntity<>(courseService.addNewCourse(courseDTO), HttpStatus.OK);
     }
 
-    @PutMapping(path = "updatecourse/{courseId}")
-    public ResponseEntity<String> updateCourse(@PathVariable("courseId") Long courseId, @RequestBody CourseDTO courseDTO){
+    @PutMapping(path = "courses/{courseId}")
+    public ResponseEntity<Object> updateCourse(@PathVariable("courseId") Long courseId, @RequestBody CourseDTO courseDTO){
         courseService.updateCourse(courseId,courseDTO);
-        return new ResponseEntity<String>("Course updated successfully", HttpStatus.OK);
+        HashMap<String, Object> body = new HashMap<>();
+        body.put("message","Course updated successfully");
+        body.put("status",HttpStatus.OK);
+        return new ResponseEntity<>(body, HttpStatus.OK);
     }
 
 }

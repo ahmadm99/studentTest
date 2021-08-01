@@ -12,11 +12,14 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -30,6 +33,7 @@ public class StudentController {
 
     @Autowired
     private StudentRepository studentRepository;
+
 
     @GetMapping(path = "studentdto")
     public List<StudentDTO> getStudentDTO() {
@@ -46,44 +50,49 @@ public class StudentController {
         return studentService.getPagination(pageNumber);
     }
 
-    @GetMapping(path = "{pageSize}/{pageNumber}")
-    public ResponseEntity<Object> getPaginationValid(@PathVariable("pageSize") int pageSize , @PathVariable("pageNumber") int pageNumber){
-        Map<String, Object> body = new LinkedHashMap<>();
-        body.put("Students List",studentService.getPaginationValid(pageSize,pageNumber));
-        body.put("Last available page", studentService.getMaxPageNumber(pageSize));
+    @GetMapping(path = "page")
+    public ResponseEntity<Object> getPaginationValid(@RequestParam(name = "size") int pageSize , @RequestParam("number") int pageNumber){
+        return new ResponseEntity<>(studentService.getPaginationValid(pageSize,pageNumber), HttpStatus.OK);
+    }
+
+    @PostMapping(path = "add/student")
+    public ResponseEntity<Student> registerNewStudent(@RequestBody StudentRequestDTO dto) throws InterruptedException {
+        return new ResponseEntity<>(studentService.addNewStudent(dto), HttpStatus.OK);
+    }
+
+    @DeleteMapping(path = "/students/{studentId}")
+    public ResponseEntity<Object> deleteStudent(@PathVariable("studentId") Long studentId) {
+        studentService.deleteStudent(studentId);
+        HashMap<String, Object> body = new HashMap<>();
+        body.put("message","Student deleted successfully");
+        body.put("status",HttpStatus.OK);
         return new ResponseEntity<>(body, HttpStatus.OK);
     }
 
-    @PostMapping
-    public ResponseEntity<String> registerNewStudent(@RequestBody StudentRequestDTO dto) throws InterruptedException {
-        if (studentService.addNewStudent(dto) != null)
-        return new ResponseEntity<String>("Student added successfully", HttpStatus.OK);
-        else{
-            return new ResponseEntity<String>("Error adding student", HttpStatus.OK);
-        }
-    }
-
-    @DeleteMapping(path = "{studentId}")
-    public ResponseEntity<String> deleteStudent(@PathVariable("studentId") Long studentId) {
-        studentService.deleteStudent(studentId);
-        return new ResponseEntity<String>("Student deleted successfully", HttpStatus.OK);
-    }
-
-    @PutMapping(path = "{studentId}")
-    public ResponseEntity<String> updateStudent(@PathVariable("studentId") Long studentId, @RequestBody StudentRequestDTO dto) throws InterruptedException {
+    @PutMapping(path = "/students/{studentId}")
+    public ResponseEntity<Object> updateStudent(@PathVariable("studentId") Long studentId, @RequestBody StudentRequestDTO dto) throws InterruptedException {
         studentService.updateStudent(studentId, dto);
-        return new ResponseEntity<String>("Student updated successfully", HttpStatus.OK);
+        HashMap<String, Object> body = new HashMap<>();
+        body.put("message","Student updated successfully");
+        body.put("status",HttpStatus.OK);
+        return new ResponseEntity<>(body, HttpStatus.OK);
     }
 
-    @PutMapping(path = "map/{studentId}/{courseId}")
-    public ResponseEntity<String> mapCourseToStudent(@PathVariable("studentId") Long studentId, @PathVariable("courseId") Long courseId){
+    @PutMapping(path = "students/{studentId}/courses/{courseId}")
+    public ResponseEntity<Object> mapCourseToStudent(@PathVariable("studentId") Long studentId, @PathVariable("courseId") Long courseId){
         studentService.mapCourseToStudent(studentId,courseId);
-        return new ResponseEntity<String>("Student updated successfully", HttpStatus.OK);
+        HashMap<String, Object> body = new HashMap<>();
+        body.put("message","Student updated successfully");
+        body.put("status",HttpStatus.OK);
+        return new ResponseEntity<>(body, HttpStatus.OK);
     }
 
-    @PutMapping(path = "unmap/{studentId}/{courseId}")
-    public ResponseEntity<String> unmapCourseToStudent(@PathVariable("studentId") Long studentId, @PathVariable("courseId") Long courseId){
+    @DeleteMapping(path = "students/{studentId}/courses/{courseId}")
+    public ResponseEntity<Object> unmapCourseToStudent(@PathVariable("studentId") Long studentId, @PathVariable("courseId") Long courseId){
         studentService.unmapCourseToStudent(studentId,courseId);
-        return new ResponseEntity<String>("Student updated successfully", HttpStatus.OK);
+        HashMap<String, Object> body = new HashMap<>();
+        body.put("message","Student updated successfully");
+        body.put("status",HttpStatus.OK);
+        return new ResponseEntity<>(body, HttpStatus.OK);
     }
 }
